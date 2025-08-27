@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shop — Buy Now via WhatsApp</title>
+  <meta name="description" content="Simple shop with Buy Now via WhatsApp" />
+  <meta property="og:title" content="Shop — Buy Now via WhatsApp" />
+  <meta property="og:description" content="Fast checkout through WhatsApp.">
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><rect width=%27100%27 height=%27100%27 fill=%27%23FFD54F%27/><text x=%2750%27 y=%2758%27 font-size=%2752%27 text-anchor=%27middle%27 fill=%27%23000%27>🛍️</text></svg>">
+  <style>
+    :root{
+      --bg:#0f1115;
+      --card:#151823;
+      --muted:#9aa3b2;
+      --text:#e8ecf1;
+      --brand:#FFD54F; /* bag kuning */
+      --brand-contrast:#1a1a1a;
+      --accent:#00a884; /* WhatsApp-ish */
+      --radius:14px;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, #1a1f2e 0%, #0f1115 55%) no-repeat, var(--bg);
+      color:var(--text);
+    }
+    header{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter:saturate(140%) blur(8px);
+      background:linear-gradient(180deg, rgba(21,24,35,.9), rgba(21,24,35,.6));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .container{max-width:1100px; margin:0 auto; padding:20px}
+    .brand{
+      display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.3px;
+    }
+    .brand-bag{
+      width:36px; height:36px; border-radius:10px; background:var(--brand); color:#000;
+      display:grid; place-items:center; font-size:20px; box-shadow:var(--shadow)
+    }
+    .hero{
+      display:grid; gap:14px; padding:28px 0 8px;
+    }
+    .hero h1{margin:0; font-size:clamp(22px, 3.5vw, 34px)}
+    .hero p{margin:0; color:var(--muted)}
+    .grid{
+      display:grid; gap:16px;
+      grid-template-columns:repeat( auto-fit, minmax(260px,1fr) );
+      padding:16px 0 120px; /* leave room for floating button */
+    }
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)) , var(--card);
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:var(--radius);
+      overflow:hidden; box-shadow:var(--shadow);
+      display:flex; flex-direction:column;
+    }
+    .media{
+      aspect-ratio: 4/3;
+      background:#0b0d12;
+      display:grid; place-items:center; font-size:40px;
+    }
+    .media img{width:100%; height:100%; object-fit:cover; display:block}
+    .content{padding:14px 14px 6px}
+    .title{font-weight:700; margin:0 0 6px}
+    .price{font-weight:800; font-size:18px}
+    .muted{color:var(--muted); font-size:14px}
+    .controls{
+      display:flex; gap:8px; padding:12px 14px 16px; align-items:center;
+    }
+    .qty{
+      display:flex; align-items:center; gap:8px;
+      background:#0d1017; border:1px solid rgba(255,255,255,.08);
+      border-radius:12px; padding:8px 10px;
+    }
+    .qty button{
+      all:unset; cursor:pointer; width:28px; height:28px; display:grid; place-items:center;
+      border-radius:8px; background:rgba(255,255,255,.06)
+    }
+    .qty input{
+      width:34px; text-align:center; background:transparent; border:none; color:var(--text); font-size:16px;
+    }
+    .btn{
+      flex:1; display:inline-flex; justify-content:center; align-items:center; gap:8px;
+      padding:12px 14px; border-radius:12px; border:none; cursor:pointer; font-weight:800;
+      background:linear-gradient(180deg, #ffe27a, #ffd54f); color:var(--brand-contrast);
+      box-shadow:0 8px 20px rgba(255, 213, 79, .35);
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn.secondary{
+      background:linear-gradient(180deg, #19c28a, #00a884); color:#041b14;
+      box-shadow:0 8px 20px rgba(0,168,132,.35);
+    }
+    .badge{
+      background:rgba(255,213,79,.2); color:#ffec9a; font-size:12px; padding:4px 8px; border-radius:999px;
+      border:1px solid rgba(255,213,79,.35); margin-left:8px;
+    }
+    /* Floating TikTok-style bag kuning button */
+    .floating-cta{
+      position:fixed; left:50%; transform:translateX(-50%);
+      bottom:18px; z-index:50; width:min(680px, calc(100% - 24px));
+      display:flex; gap:10px; padding:10px; border-radius:16px;
+      background:rgba(21,24,35,.8); backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,.08); box-shadow:var(--shadow);
+    }
+    .floating-cta .bag{
+      width:52px; height:52px; border-radius:12px; background:var(--brand); color:#000;
+      display:grid; place-items:center; font-size:28px; flex:0 0 auto;
+    }
+    .floating-cta .cta-btn{
+      flex:1; display:flex; justify-content:center; align-items:center; gap:10px;
+      border-radius:12px; border:none; cursor:pointer; font-weight:900; letter-spacing:.2px;
+      background:linear-gradient(180deg, #ffe27a, #ffd54f); color:#111; padding:12px 16px;
+    }
+    .floating-cta .cta-btn:active{transform:translateY(1px)}
+    .floating-cta small{color:var(--muted)}
+    footer{padding:40px 0; color:var(--muted); text-align:center}
+    a{color:inherit}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;">
+      <div class="brand">
+        <div class="brand-bag">🛍️</div>
+        <div>
+          <div style="font-size:18px">ALTRA SHOP</div>
+          <div style="font-size:12px; color:var(--muted)">Buy now via WhatsApp</div>
+        </div>
+      </div>
+      <a href="#" id="open-whatsapp-top" class="btn secondary" style="text-decoration:none; padding:10px 14px; font-size:14px">
+        <span>Chat WhatsApp</span> <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="hero">
+      <h1>Pilih Produk • Checkout <span class="badge">Bag Kuning</span></h1>
+      <p>Bayar & order terus di WhatsApp. Senang, laju, confirm dengan admin.</p>
+    </div>
+
+    <!-- PRODUCTS -->
+    <section class="grid" id="product-grid">
+      <!-- Product card template 1 -->
+      <article class="card" data-sku="MK-AXTEN-01" data-name="Muscle Kingdom Amino Xten" data-price="69.00">
+        <div class="media">
+          <!-- Replace with your image -->
+          <img src="https://images.unsplash.com/photo-1517638851339-4aa32003c11a?q=80&w=1600&auto=format&fit=crop" alt="Muscle Kingdom Amino Xten">
+        </div>
+        <div class="content">
+          <h3 class="title">Muscle Kingdom Amino Xten</h3>
+          <div class="muted">Flavour:
+            <select class="muted" aria-label="Choose flavour">
+              <option>Grape</option>
+              <option>Blue Raspberry</option>
+              <option>Mango</option>
+            </select>
+          </div>
+          <p class="muted" style="margin:10px 0 0">Recovery amino for training days.</p>
+          <p class="price">RM <span class="price-val">69.00</span></p>
+        </div>
+        <div class="controls">
+          <div class="qty" aria-label="Quantity controls">
+            <button class="minus" aria-label="Decrease quantity">−</button>
+            <input class="count" type="number" min="1" value="1" inputmode="numeric" aria-label="Quantity">
+            <button class="plus" aria-label="Increase quantity">+</button>
+          </div>
+          <button class="btn buy">Buy Now</button>
+        </div>
+      </article>
+
+      <!-- Product card template 2 -->
+      <article class="card" data-sku="ALTRA-TEE-24" data-name="Altra Gym Tee" data-price="49.00">
+        <div class="media">
+          <img src="https://images.unsplash.com/photo-1521575107034-de793f600027?q=80&w=1600&auto=format&fit=crop" alt="Altra Gym Tee">
+        </div>
+        <div class="content">
+          <h3 class="title">Altra Gym Tee</h3>
+          <div class="muted">Size:
+            <select class="muted" aria-label="Choose size">
+              <option>S</option><option>M</option><option>L</option><option>XL</option>
+            </select>
+          </div>
+          <p class="muted" style="margin:10px 0 0">Soft cotton, unisex cut.</p>
+          <p class="price">RM <span class="price-val">49.00</span></p>
+        </div>
+        <div class="controls">
+          <div class="qty">
+            <button class="minus" aria-label="Decrease quantity">−</button>
+            <input class="count" type="number" min="1" value="1" inputmode="numeric" aria-label="Quantity">
+            <button class="plus" aria-label="Increase quantity">+</button>
+          </div>
+          <button class="btn buy">Buy Now</button>
+        </div>
+      </article>
+
+      <!-- Duplicate the card block above for more products -->
+    </section>
+  </main>
+
+  <!-- Floating “bag kuning” CTA -->
+  <div class="floating-cta" role="region" aria-label="Quick buy">
+    <div class="bag" aria-hidden="true">🛍️</div>
+    <div style="display:flex; flex-direction:column; gap:4px; flex:1">
+      <strong>Pantang tunggu — terus WhatsApp</strong>
+      <small>Klik untuk order cepat. Admin akan reply & confirm stok.</small>
+    </div>
+    <button class="cta-btn" id="open-whatsapp-bottom">
+      Buka WhatsApp • Buy Now
+    </button>
+  </div>
+
+  <footer>
+    © <span id="year"></span> Altra Shop • WhatsApp: <a href="#" id="whats-link">+60 17-202 8708</a>
+  </footer>
+
+  <script>
+    // ===== config =====
+    const WHATSAPP_NUMBER_E164 = "60172028708"; // Malaysia +60, remove leading 0
+    const defaultIntro = "Hi Altra Shop! Saya nak buat order 👇";
+    // ==================
+
+    const yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    function productToLine(card){
+      const name = card.dataset.name || 'Item';
+      const sku = card.dataset.sku || '';
+      const price = parseFloat(card.dataset.price || '0').toFixed(2);
+      const qty = Math.max(1, parseInt(card.querySelector('.count')?.value || '1', 10));
+      // try to pick the first <select> value as variant (e.g., size/flavour)
+      const select = card.querySelector('select');
+      const variant = select ? ` (${select.value})` : '';
+      const subtotal = (qty * parseFloat(price)).toFixed(2);
+      return `• ${name}${variant} [${sku}] × ${qty} — RM ${subtotal}`;
+    }
+
+    function buildMessage(selectedCards){
+      const lines = [defaultIntro, ""];
+      let grand = 0;
+      selectedCards.forEach(card=>{
+        const price = parseFloat(card.dataset.price || '0');
+        const qty = Math.max(1, parseInt(card.querySelector('.count')?.value || '1', 10));
+        grand += price * qty;
+        lines.push(productToLine(card));
+      });
+      lines.push("");
+      lines.push(`Total anggaran: RM ${grand.toFixed(2)}`);
+      lines.push("");
+      lines.push("Nama:");
+      lines.push("Alamat:");
+      lines.push("Cara bayar (FPX/Transfer/Tunai):");
+      return lines.join('\n');
+    }
+
+    function openWhatsAppWith(cards){
+      const text = buildMessage(cards);
+      const url = `https://wa.me/${WHATSAPP_NUMBER_E164}?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }
+
+    // Bind plus/minus & Buy buttons
+    document.querySelectorAll('.card').forEach(card=>{
+      const minus = card.querySelector('.minus');
+      const plus = card.querySelector('.plus');
+      const input = card.querySelector('.count');
+      minus?.addEventListener('click', ()=>{ input.value = Math.max(1, (parseInt(input.value||'1',10)-1)); });
+      plus?.addEventListener('click', ()=>{ input.value = Math.max(1, (parseInt(input.value||'1',10)+1)); });
+      card.querySelector('.buy')?.addEventListener('click', ()=> openWhatsAppWith([card]));
+    });
+
+    // Floating CTA & header chat button open WhatsApp with all items that have qty>=1 (defaults to 1)
+    const bottomBtn = document.getElementById('open-whatsapp-bottom');
+    const topBtn = document.getElementById('open-whatsapp-top');
+    const linkText = document.getElementById('whats-link');
+
+    function openWithAll(){
+      const cards = Array.from(document.querySelectorAll('.card'));
+      openWhatsAppWith(cards);
+    }
+    bottomBtn?.addEventListener('click', openWithAll);
+    topBtn?.addEventListener('click', openWithAll);
+    linkText?.addEventListener('click', (e)=>{ e.preventDefault(); openWithAll(); });
+  </script>
+</body>
+</html>
